@@ -1,5 +1,7 @@
 import { Component, HostBinding, OnDestroy, } from '@angular/core';
 import { AppInfoService, AuthService, ScreenService, ThemeService } from './services';
+import config from "devextreme/core/config";
+import { licenseKey } from '../devextreme-license';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,9 @@ export class AppComponent implements OnDestroy {
               private themeService: ThemeService,
               private screen: ScreenService,
               public appInfo: AppInfoService) {
+    config({ licenseKey });
     themeService.setAppTheme();
+
   }
 
   isAuthenticated() {

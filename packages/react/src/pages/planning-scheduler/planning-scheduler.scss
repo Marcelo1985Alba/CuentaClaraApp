@@ -1,0 +1,80 @@
+@use "../../variables.scss" as *;
+@use "sass:math";
+
+.view-wrapper-calendar {
+  position: relative;
+  flex-direction: column;
+  display: flex;
+  height: inherit;
+  padding: 0 var(--page-padding);
+
+  .calendar-content {
+    display: flex;
+    height: inherit;
+    gap: 16px;
+    padding-top: var(--content-padding);
+    padding-bottom: var(--theme-padding);
+
+    .left-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--theme-padding);
+
+      .buttons {
+        display: flex;
+        width: 100%;
+        gap: 16px;
+        margin-top: var(--theme-padding);
+        padding: 0 var(--theme-padding);
+
+        .dx-button {
+          width: calc((100% - var(--theme-padding)) / 2);
+          font-size: 13px;
+          border-radius: 4px;
+        }
+      }
+
+      .calendar {
+        align-self: center;
+        padding: var(--theme-padding) 0;
+      }
+
+      .dx-calendar {
+        width: var(--calendar-width);
+      }
+    }
+
+    .main-content {
+      flex: 1;
+      height: inherit;
+      border: 1px grey;
+      border-radius: 8px;
+    }
+  }
+
+  .dx-scheduler-appointment-content {
+    color: #333;
+  }
+
+  .dx-scheduler-agenda .dx-scheduler-appointment-recurrence-icon {
+    color: #333;
+  }
+
+  .dx-scheduler-header {
+    border-radius: 8px 8px 0 0;
+    height: var(--scheduler-toolbar-height);
+  }
+
+  .dx-scheduler-work-space {
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+.dx-tooltip-wrapper > .dx-popup-normal {
+  background-color: var(--base-bg) !important;
+  color: var(--base-text-color) !important;
+  border-radius: 8px !important;
+  max-width: 360px;
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.24));
+}

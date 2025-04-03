@@ -1,0 +1,48 @@
+@use '../../variables.scss' as *;
+@use 'sass:math';
+
+:root {
+  --left-panel-width: 400px;
+  --right-panel-width: 360px;
+}
+
+.toolbar-details {
+  margin-bottom: calc(var(--toolbar-margin-bottom) / 2);
+
+  .dx-toolbar-label > div {
+    @include header();
+  }
+}
+
+.view-wrapper.view-wrapper-contact-details {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding-top: var(--content-padding);
+  padding-bottom: var(--content-padding);
+
+  @media only screen and (max-width: 875px) {
+    .contact-name-toolbar-item {
+      min-width: calc(var(--left-panel-width) + var(--right-panel-width) - 145px);
+    }
+  }
+
+  .panels {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+
+    .left {
+      flex: 1 var(--left-panel-width);
+      margin-top: 8px;
+    }
+
+    .right {
+      flex: 1 calc(100% - var(--left-panel-width) - 20px);
+      margin-top: 8px;
+      min-width: 340px;
+    }
+  }
+}

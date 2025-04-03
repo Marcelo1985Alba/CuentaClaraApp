@@ -1,0 +1,9 @@
+@use "../../variables.scss" as *;
+
+.single-card {
+  height: 100%;
+
+  .dx-scrollview-content {
+    height: 100%;
+  }
+}

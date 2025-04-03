@@ -1,0 +1,125 @@
+:root {
+  --toolbar-vertical-padding: 16px;
+
+  .dx-theme-generic {
+    --change-password-popup-height: 190px;
+  }
+}
+
+@mixin separator() {
+  .h-separator {
+    height: 1px;
+    width: auto;
+    background: var(--border-color);
+  }
+
+  .separator {
+    height: 24px;
+    width: 1px;
+    background: var(--border-color);
+
+    .dx-toolbar-menu-section & {
+      height: 1px;
+      width: auto;
+    }
+  }
+}
+
+@mixin header {
+  font-size: 22px;
+  font-weight: 400;
+  padding-right: 25px;
+}
+
+@mixin shadow() {
+  box-shadow: 0 1px 4px 0 #00000026;
+}
+
+@mixin message-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--texteditor-label-color);
+}
+
+@mixin message-text {
+  padding-top: 5px;
+  line-height: 21px;
+}
+
+@mixin messages-content {
+  .messages-content {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--base-bg);
+  }
+}
+
+
+@mixin calendar-items-text {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+@mixin description-text($opacity) {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  opacity: $opacity;
+}
+
+@mixin h1-header-text {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+}
+
+@mixin h2-header-text {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+@mixin status($status-color) {
+  color: $status-color;
+
+  &.dx-texteditor {
+    .status-input.status-editor-input {
+      color: $status-color;
+    }
+  }
+
+  &::before {
+    background: $status-color;
+  }
+}
+
+@mixin subtext($opacity: 1) {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  opacity: $opacity;
+}
+
+@mixin card-shadow() {
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.04);
+}
+
+@mixin toolbar-panel() {
+  background-color: var(--base-bg);
+  padding: 5px var(--content-padding);
+  border-radius: 8px;
+  @include shadow();
+}

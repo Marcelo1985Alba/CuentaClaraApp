@@ -1,0 +1,26 @@
+@use "../../../variables.scss" as *;
+@use "sass:math";
+
+.agenda {
+  .agenda-header {
+    padding: var(--theme-padding);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--accent-color);
+    border-bottom: solid 1px var(--border-color);
+
+    .dx-button .dx-icon {
+      color: var(--accent-color);
+    }
+
+    .date {
+      @include h2-header-text();
+    }
+  }
+
+  .dx-list-item {
+    border-bottom: solid 1px var(--border-color);
+  }
+}

@@ -1,0 +1,33 @@
+<dx-popup
+  [title]="titleText"
+  [(visible)]="visible"
+  [fullScreen]="!!(screen.xSmallScreenChanged | async)"
+  [width]="width"
+  [wrapperAttr]="getWrapperAttrs | apply: wrapperAttr"
+  (onHidden)="close()"
+  [height]="height"
+>
+  <dxi-popup-toolbar-item toolbar="bottom" location="center">
+    <div
+      class="form-popup-buttons-container"
+      [class.flex-buttons]="width <= 360"
+    >
+      <dx-button
+        text="Cancel"
+        stylingMode="outlined"
+        type="normal"
+        (onClick)="close()"
+      ></dx-button>
+      <dx-button
+        text="Save"
+        stylingMode="contained"
+        type="default"
+        [disabled]="isSaveDisabled"
+        (onClick)="onSaveClick()"
+      ></dx-button>
+    </div>
+  </dxi-popup-toolbar-item>
+  <dx-validation-group #validationGroup>
+    <ng-content></ng-content>
+  </dx-validation-group>
+</dx-popup>

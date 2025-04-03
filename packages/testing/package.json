@@ -1,0 +1,25 @@
+{
+  "name": "testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start-apps": "node ./run-server.js",
+    "stop-apps": "node ./kill-server.js",
+    "test-testcafe": "node ./runner.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "devextreme-screenshot-comparer": "^2.0.14",
+    "fs-extra": "^10.0.0",
+    "http-server": "^14.1.0"
+  },
+  "dependencies": {
+    "luxon": "^3.3.0",
+    "minimist": "^1.2.6",
+    "testcafe": "^2.1.0",
+    "testing": "file:"
+  }
+}

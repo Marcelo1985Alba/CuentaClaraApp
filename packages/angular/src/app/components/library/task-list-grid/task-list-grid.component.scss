@@ -1,0 +1,10 @@
+@use "../../../../variables.scss" as *;
+@use "sass:math";
+
+#tasks-grid {
+  min-height: 300px;
+}
+
+.edit-cell {
+  position: relative;
+}

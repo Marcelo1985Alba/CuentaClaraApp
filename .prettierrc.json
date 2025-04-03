@@ -1,0 +1,17 @@
+{
+    "tabWidth": 2,
+    "htmlWhitespaceSensitivity": "strict",
+    "overrides": [
+        {
+            "files": [
+                "packages/angular/**/*.component.html",
+                "packages/shell/**/*.component.html"
+            ],
+            "options": {
+                "printWidth": 80
+            }
+        }
+    ],
+    "jsxSingleQuote": true,
+    "singleQuote": true
+}

@@ -1,0 +1,57 @@
+@use "../../variables.scss" as *;
+@use "sass:math";
+
+.view-wrapper-dashboard {
+  td.dx-command-adaptive.dx-command-adaptive,
+  td.sales-bullet.sales-bullet {
+    border-left: none;
+    border-right: none;
+  }
+}
+
+.cards {
+  display: grid;
+  width: 100%;
+  margin-top: 20px;
+  gap: 20px;
+  grid-template-columns: repeat(2, calc(50% - 10px));
+
+  &.compact {
+    grid-template-columns: repeat(4, calc(25% - 15px));
+
+    .card {
+      background-color: var(--side-panel-background);
+      border: none;
+      height: 120px;
+
+      .dx-button {
+        background-color: var(--side-panel-background);
+      }
+    }
+
+    .dx-loadpanel-indicator {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .cards.compact {
+    grid-template-columns: repeat(2, calc(50% - 10px));
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(1, 100%);
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .cards {
+    &.compact {
+      grid-template-columns: repeat(1, 100%);
+    }
+  }
+}

@@ -1,0 +1,25 @@
+@use "../../variables.scss" as *;
+
+.side-nav-outer-toolbar {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.layout-header {
+  z-index: 1501;
+}
+
+.layout-body {
+  background-color: var(--background-color);
+}
+
+.drawer {
+  flex: 1;
+  min-height: 0;
+}
+
+.content {
+  flex-grow: 1;
+}

@@ -1,0 +1,9 @@
+@use "../../../variables.scss" as *;
+
+.toolbar-form {
+  margin-bottom: var(--toolbar-margin-bottom);
+}
+
+.form-title {
+  font-size: 18px;
+}

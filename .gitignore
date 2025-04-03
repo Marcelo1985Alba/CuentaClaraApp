@@ -1,0 +1,30 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Output of 'npm pack'
+*.tgz
+*.user
+
+.DS_Store
+build
+devextreme-ui-template-gallery
+packages/angular/src/resize-listener.js
+packages/vue/src/resize-listener.js
+packages/react/src/resize-listener.js
+packages/shell/src/app/themes.json
+packages/service/service/bin
+packages/service/service/obj
+packages/service/.vs
+packages/testing/pids.json
+packages/testing/screenshots
+packages/testing/testing
+.env
+swa-cli.config.json

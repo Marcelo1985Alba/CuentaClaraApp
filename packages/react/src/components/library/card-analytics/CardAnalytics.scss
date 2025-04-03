@@ -1,0 +1,38 @@
+@use '../../../variables.scss' as *;
+
+.card {
+  border-radius: 4px;
+  box-shadow: none;
+  position: relative;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+
+  .header {
+    padding: var(--content-padding) var(--content-padding) 0;
+  }
+
+  .overflow-menu {
+    position: absolute;
+    right: 8px;
+    left: auto;
+    top: 10px;
+  }
+
+  .title {
+    color: var(--base-text-color);
+    line-height: 19px;
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 20px;
+    display: inline-block;
+    padding-right: 25px;
+  }
+
+  .card-contents {
+    padding: 0 var(--content-padding) var(--content-padding);
+    box-sizing: content-box;
+    font-size: 14px;
+    line-height: 17px;
+    height: 270px;
+  }
+}

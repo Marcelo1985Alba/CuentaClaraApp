@@ -1,0 +1,40 @@
+@use "../../../variables.scss" as *;
+
+.header-component {
+  flex: 0 0 auto;
+  z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), 0 0 4px rgba(0, 0, 0, 0.15);
+  padding: 10px 0;
+  background-color: var(--base-bg);
+
+  .dx-toolbar.header-toolbar {
+    padding-right: var(--content-padding);
+
+    .global-search-box {
+      padding-right: 11px;
+    }
+
+    .messages {
+      position: relative;
+
+      .dx-badge {
+        position: absolute;
+        background-color: red;
+        color: white;
+        right: -10%;
+        top: -10%;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        border-radius: 10px;
+        justify-content: center;
+      }
+    }
+
+    .dx-toolbar-item.menu-button {
+      width: var(--side-panel-min-width);
+      text-align: center;
+      padding: 0;
+    }
+  }
+}

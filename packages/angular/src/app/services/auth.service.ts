@@ -22,7 +22,7 @@ export const defaultUser: IUser = {
 
 @Injectable()
 export class AuthService {
-  private _user: IUser | null = defaultUser;
+  private _user: IUser | null = null;
 
   get loggedIn(): boolean {
     return !!this._user;
@@ -125,23 +125,23 @@ export class AuthService {
 export class AuthGuardService implements CanActivate {
   constructor(private router: Router, private authService: AuthService) { }
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
-    const isLoggedIn = this.authService.loggedIn;
-    const isAuthForm = [
-      'login',
-      'reset-password',
-      'create-account',
-      'change-password/:recoveryCode',
-    ].includes(route.routeConfig?.path || defaultPath);
+    canActivate(route: ActivatedRouteSnapshot): boolean {
+      const isLoggedIn = this.authService.loggedIn;
+      const isAuthForm = [
+        'login',
+        'reset-password',
+        'create-account',
+        'change-password/:recoveryCode',
+      ].includes(route.routeConfig?.path || defaultPath);
 
-    if (!isLoggedIn && isAuthForm) {
-      this.router.navigate(['/auth/login']);
+      if (!isLoggedIn && !isAuthForm) {
+        this.router.navigate(['/auth/login']);
+      }
+
+      if (isLoggedIn) {
+        this.authService.lastAuthenticatedPath = route.routeConfig?.path || defaultPath;
+      }
+
+      return isLoggedIn || isAuthForm;
     }
-
-    if (isLoggedIn) {
-      this.authService.lastAuthenticatedPath = route.routeConfig?.path || defaultPath;
-    }
-
-    return isLoggedIn || isAuthForm;
-  }
 }

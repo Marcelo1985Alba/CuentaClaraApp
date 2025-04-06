@@ -33,3 +33,10 @@ swa-cli.config.json
 /api/CuentaClaraAPI/.vs/CuentaClaraAPI/v17
 /api/CuentaClaraAPI/.vs/ProjectEvaluation
 /api/CuentaClaraAPI/CuentaClaraAPI/obj
+/api/CuentaClaraAPI/CuentaClara.Application/bin/Debug/net9.0
+/api/CuentaClaraAPI/CuentaClara.Application/obj
+/api/CuentaClaraAPI/CuentaClara.Domain/bin/Debug/net9.0
+/api/CuentaClaraAPI/CuentaClara.Infrastructure/bin/Debug/net9.0
+/api/CuentaClaraAPI/CuentaClaraAPI/bin/Debug
+/api/CuentaClaraAPI/CuentaClara.Domain/obj/Debug/net9.0
+/api/CuentaClaraAPI/CuentaClara.Domain/obj

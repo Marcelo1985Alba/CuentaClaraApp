@@ -3,14 +3,14 @@
     labelLocation="top"
     [formData]="formData"
     [disabled]="loading"
-    [showColonAfterLabel]="true"    
+    [showColonAfterLabel]="true"
   >
     <dxi-item
       dataField="email"
       editorType="dxTextBox"
       [editorOptions]="{
         stylingMode: 'filled',
-        mode: 'email',
+        mode: 'text',
         value: defaultAuthData?.data?.email
       }"
     >
@@ -18,10 +18,10 @@
         type="required"
         message="Email is required"
       ></dxi-validation-rule>
-      <dxi-validation-rule
+      <!-- <dxi-validation-rule
         type="email"
         message="Email is invalid"
-      ></dxi-validation-rule>
+      ></dxi-validation-rule> -->
       <dxo-label text="Email"></dxo-label>
     </dxi-item>
 

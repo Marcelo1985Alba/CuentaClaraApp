@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 
@@ -30,28 +32,36 @@ export class AuthService {
 
   private _lastAuthenticatedPath: string = defaultPath;
 
+  get lastAuthenticatedPath(): string {
+    return this._lastAuthenticatedPath;
+  }
   set lastAuthenticatedPath(value: string) {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router) { }
+  constructor(private http: HttpClient,private router: Router) { }
 
-  async logIn(email: string, password: string) {
-    try {
-      // Send request
-      this._user = { ...defaultUser, email };
-      this.router.navigate([this._lastAuthenticatedPath]);
+  // async logIn(username: string, password: string) {
+  //   try {
+  //     // Send request
+  //     this.router.navigate([this._lastAuthenticatedPath]);
 
-      return {
-        isOk: true,
-        data: this._user,
-      };
-    } catch {
-      return {
-        isOk: false,
-        message: 'Authentication failed',
-      };
-    }
+  //     return {
+  //       isOk: true,
+  //       data: this._user,
+  //     };
+  //   } catch {
+  //     return {
+  //       isOk: false,
+  //       message: 'Authentication failed',
+  //     };
+  //   }
+  // }
+
+  logIn(username: string, password: string) : Observable<any> {
+      const user = {username: username, password: password}
+      return this.http.post<any>('https://localhost:7062/api/Users/login', user)
+
   }
 
   async getUser() {

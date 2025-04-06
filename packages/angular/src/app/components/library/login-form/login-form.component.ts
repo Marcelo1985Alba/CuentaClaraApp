@@ -8,6 +8,7 @@ import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
 import { DxButtonModule, DxButtonTypes } from 'devextreme-angular/ui/button';
 import notify from 'devextreme/ui/notify';
 import { AuthService, IResponse, ThemeService } from 'src/app/services';
+import { error } from 'console';
 
 @Component({
   selector: 'app-login-form',
@@ -60,11 +61,20 @@ export class LoginFormComponent implements OnInit {
     const { email, password } = this.formData;
     this.loading = true;
 
-    const result = await this.authService.logIn(email, password);
+    this.authService.logIn(email, password).subscribe({
+      next: res=> {
     this.loading = false;
-    if (!result.isOk) {
-      notify(result.message, 'error', 2000);
-    }
+        console.log(res);
+
+        this.router.navigate([this.authService.lastAuthenticatedPath]);
+    },
+    error: (err) => {
+      this.loading = false;
+      console.error(err.error);
+      // Aquí puedes manejar el error de la forma que desees
+      notify('Ocurrió un error en la autenticación', 'error', 4000);
+    }});
+
   }
 
   onCreateAccountClick = () => {

@@ -28,3 +28,8 @@ packages/testing/screenshots
 packages/testing/testing
 .env
 swa-cli.config.json
+/api/CuentaClaraAPI/.vs/CuentaClaraAPI/DesignTimeBuild
+/api/CuentaClaraAPI/.vs/CuentaClaraAPI/FileContentIndex
+/api/CuentaClaraAPI/.vs/CuentaClaraAPI/v17
+/api/CuentaClaraAPI/.vs/ProjectEvaluation
+/api/CuentaClaraAPI/CuentaClaraAPI/obj

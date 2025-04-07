@@ -53,8 +53,32 @@ namespace CuentaClara.API.Controllers
 
             if (!result.Success) return Unauthorized("Credenciales inválidas");
 
-            return Ok(new { Token = result.Token });
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true, // La cookie no será accesible desde JavaScript
+                Secure = true,   // Solo se enviará en conexiones HTTPS
+                SameSite = SameSiteMode.None, // Permite enviar cookies entre dominios distintos (CORS)
+                Expires = DateTime.UtcNow.AddHours(1) // Expira en 1 hora
+            };
+
+            Response.Cookies.Append("AuthToken", result.Token, cookieOptions);
+
+            //return Ok(new { Token = result.Token });
+            return Ok();
         }
+
+        [HttpGet("UserLoggedIn")]
+        [Authorize]
+        public IActionResult GetUserLoggedIn()
+        {
+            var token = Request.Cookies["AuthToken"];
+
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized(new { Message = "No autenticado" });
+
+            return Ok(new { Message = "Bienvenido!", Token = token });
+        }
+
 
         [HttpPut("{id}")]
         [Authorize]

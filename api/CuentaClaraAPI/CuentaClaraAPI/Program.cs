@@ -36,6 +36,23 @@ var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration[
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // Buscar el token en las cookies en lugar de los headers
+                var token = context.Request.Cookies["AuthToken"];
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -66,6 +83,30 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "Cuenta Clara API"
     });
+
+    // Añadir soporte para cookies en Swagger
+    c.AddSecurityDefinition("CookieAuth", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
+        Name = "AuthToken",
+        Description = "Cookie de autenticación",
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "CookieAuth"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 // Configuración de CORS
@@ -74,6 +115,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp", policy =>
     {
         policy.WithOrigins("http://localhost:4200")  // Dirección de tu aplicación Angular
+              .AllowCredentials() // Permitir el uso de credenciales (cookies)
               .AllowAnyHeader()  // Permite cualquier encabezado
               .AllowAnyMethod(); // Permite cualquier método HTTP (GET, POST, PUT, DELETE, etc.)
     });

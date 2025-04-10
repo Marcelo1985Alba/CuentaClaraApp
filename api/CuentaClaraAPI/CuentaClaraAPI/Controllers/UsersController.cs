@@ -66,7 +66,7 @@ namespace CuentaClara.API.Controllers
             Response.Cookies.Append("AuthToken", result.Token, cookieOptions);
 
             //return Ok(new { Token = result.Token });
-            return this.OkResult(result.result, "Inicio de sesión exitoso");
+            return this.OkResult(result.result.User, "Inicio de sesión exitoso");
         }
 
         [HttpGet("UserLoggedIn")]

@@ -14,5 +14,10 @@
         // Propiedades adicionales personalizadas
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
+
+        public string ImageUrl { get; set; } = null!;
+
+        // Relación con roles
+        //public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new HashSet<ApplicationUserRole>();
     }
 }

@@ -60,7 +60,8 @@ namespace CuentaClara.Application.Services
                 Email = userDto.Email,
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
-                PhoneNumber = userDto.PhoneNumber
+                PhoneNumber = userDto.PhoneNumber,
+                ImageUrl = userDto.ImageUrl
             };
 
             var result = await _userRepository.CreateAsync(user, userDto.Password);
@@ -81,6 +82,7 @@ namespace CuentaClara.Application.Services
             user.FirstName = userDto.FirstName;
             user.LastName = userDto.LastName;
             user.PhoneNumber = userDto.PhoneNumber;
+            user.ImageUrl = userDto.ImageUrl;
 
             var result = await _userRepository.UpdateAsync(user);
             if (!result)
@@ -123,7 +125,8 @@ namespace CuentaClara.Application.Services
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                ImageUrl = user.ImageUrl
             };
         }
     }

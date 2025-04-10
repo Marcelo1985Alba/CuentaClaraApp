@@ -4,12 +4,12 @@ namespace CuentaClara.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<UserDto?> GetByIdAsync(string id);
-        Task<UserDto?> GetByEmailAsync(string email);
-        Task<IEnumerable<UserDto>> GetAllAsync();
-        Task<(bool Success, string UserId)> CreateAsync(CreateUserDto userDto);
-        Task<bool> UpdateAsync(string id, UpdateUserDto userDto);
-        Task<bool> DeleteAsync(string id);
-        Task<(bool Success, string? Token)> LoginAsync(LoginDto loginDto);
+        Task<(bool Success, UserDto?, string? ErrorMessage)> GetByIdAsync(string id);
+        Task<(bool Success, UserDto?, string? ErrorMessage)> GetByEmailAsync(string email);
+        Task<(bool Success, IEnumerable<UserDto>, string? ErrorMessage)> GetAllAsync();
+        Task<(bool Success, string UserId, string? ErrorMessage)> CreateAsync(CreateUserDto userDto);
+        Task<(bool Success, string? ErrorMessage)> UpdateAsync(string id, UpdateUserDto userDto);
+        Task<(bool Success, string? ErrorMessage)> DeleteAsync(string id);
+        Task<((bool Success, UserDto? User, string? ErrorMessage) result, string? Token)> LoginAsync(LoginDto loginDto);
     }
 }

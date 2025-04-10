@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CuentaClara.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63cde577fdc888296898bfcf5e6679f6dc0359e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18a958fd2c08faf00947d011d66aa31f96dc3e4c")]
 [assembly: System.Reflection.AssemblyProductAttribute("CuentaClara.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CuentaClara.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

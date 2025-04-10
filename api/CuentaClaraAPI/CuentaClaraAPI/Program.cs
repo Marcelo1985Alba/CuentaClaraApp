@@ -1,3 +1,4 @@
+using CuentaClara.API.Extensions;
 using CuentaClara.Application.Interfaces;
 using CuentaClara.Application.Services;
 using CuentaClara.Domain.Interfaces;
@@ -122,6 +123,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseErrorHandler();
+
 // Habilitar CORS para la API
 app.UseCors("AllowAngularApp");  // Usa la política definida previamente
 

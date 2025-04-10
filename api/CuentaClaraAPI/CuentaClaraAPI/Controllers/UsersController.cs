@@ -1,4 +1,5 @@
-﻿using CuentaClara.Application.DTOs;
+﻿using CuentaClara.API.Extensions;
+using CuentaClara.Application.DTOs;
 using CuentaClara.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,18 +21,18 @@ namespace CuentaClara.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _userService.GetAllAsync();
-            return Ok(users);
+            var result = await _userService.GetAllAsync();
+            return this.OkResult(result, "Usuarios obtenidos correctamente");
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(string id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null) return NotFound();
+            var result = await _userService.GetByIdAsync(id);
+            if (!result.Success) return this.NotFoundResult(result.ErrorMessage);
 
-            return Ok(user);
+            return this.OkResult(result.Item2);
         }
 
         [HttpPost("register")]
@@ -40,9 +41,10 @@ namespace CuentaClara.API.Controllers
         {
             var result = await _userService.CreateAsync(createUserDto);
 
-            if (!result.Success) return BadRequest("Error al registrar el usuario");
+            if (!result.Success) return this.BadRequestResult("Error al registrar el usuario");
 
-            return CreatedAtAction(nameof(GetById), new { id = result.UserId }, null);
+            return this.CreatedResult("Usuario registrado exitosamente", result.UserId, createUserDto);
+            //return CreatedAtAction(nameof(GetById), new { id = result.UserId }, null);
         }
 
         [HttpPost("login")]
@@ -51,7 +53,7 @@ namespace CuentaClara.API.Controllers
         {
             var result = await _userService.LoginAsync(loginDto);
 
-            if (!result.Success) return Unauthorized("Credenciales inválidas");
+            if (!result.result.Success) return this.UnauthorizedResult("Credenciales inválidas");
 
             var cookieOptions = new CookieOptions
             {
@@ -64,7 +66,7 @@ namespace CuentaClara.API.Controllers
             Response.Cookies.Append("AuthToken", result.Token, cookieOptions);
 
             //return Ok(new { Token = result.Token });
-            return Ok();
+            return this.OkResult(result.result, "Inicio de sesión exitoso");
         }
 
         [HttpGet("UserLoggedIn")]
@@ -74,9 +76,12 @@ namespace CuentaClara.API.Controllers
             var token = Request.Cookies["AuthToken"];
 
             if (string.IsNullOrEmpty(token))
-                return Unauthorized(new { Message = "No autenticado" });
+                return this.UnauthorizedResult("Credenciales inválidas");
 
-            return Ok(new { Message = "Bienvenido!", Token = token });
+
+            return this.OkResult(new { Message = "Bienvenido!", Token = token });
+
+            //return Ok(new { Message = "Bienvenido!", Token = token });
         }
 
 
@@ -86,9 +91,9 @@ namespace CuentaClara.API.Controllers
         {
             var result = await _userService.UpdateAsync(id, updateUserDto);
 
-            if (!result) return NotFound();
+            if (!result.Success) return  this.NotFoundResult($"Usuario con ID {id} no encontrado");
 
-            return NoContent();
+            return this.OkResult();
         }
 
         [HttpDelete("{id}")]
@@ -97,9 +102,9 @@ namespace CuentaClara.API.Controllers
         {
             var result = await _userService.DeleteAsync(id);
 
-            if (!result) return NotFound();
+            if (!result.Success) return this.NotFoundResult($"Usuario con ID {id} no encontrado");
 
-            return NoContent();
+            return this.NoContent();
         }
     }
 }

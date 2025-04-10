@@ -64,20 +64,10 @@ export class AuthService {
 
   }
 
-  async getUser() {
-    try {
-      // Send request
 
-      return {
-        isOk: true,
-        data: this._user,
-      };
-    } catch {
-      return {
-        isOk: false,
-        data: null,
-      };
-    }
+  getUser() : Observable<any> {
+    // Send request
+    return this.http.get<any>('https://localhost:7062/api/Users/UserLoggedIn', { withCredentials: true });
   }
 
   async createAccount(email: string, password: string) {

@@ -40,7 +40,7 @@ export class AppHeaderComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   ngOnInit() {
-    this.authService.getUser().then((e) => this.user = e.data);
+    this.authService.getUser().subscribe((e) => this.user = e.data);
   }
 
   toggleMenu = () => {

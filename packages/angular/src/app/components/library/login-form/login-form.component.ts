@@ -7,8 +7,9 @@ import { DxFormModule } from 'devextreme-angular/ui/form';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
 import { DxButtonModule, DxButtonTypes } from 'devextreme-angular/ui/button';
 import notify from 'devextreme/ui/notify';
-import { AuthService, IResponse, ThemeService } from 'src/app/services';
+import { IResponse, ThemeService } from 'src/app/services';
 import { error } from 'console';
+import { LoginService } from 'src/app/shared/services/login.service';
 
 @Component({
   selector: 'app-login-form',
@@ -34,46 +35,56 @@ export class LoginFormComponent implements OnInit {
     stylingMode:'filled',
     mode: this.passwordMode,
     value: 'password',
-    // buttons: [{
-    //   name: 'password',
-    //   location: 'after',
-    //   options: {
-    //     icon: 'info',
-    //     stylingMode:'text',
-    //     onClick: () => this.changePasswordMode(),
-    //   }
-    // }]
+    buttons: [{
+      name: 'password',
+      location: 'after',
+      options: {
+        icon: 'info',
+        stylingMode:'text',
+        onClick: () => this.changePasswordMode(),
+      }
+    }]
   }
 
-  constructor(private authService: AuthService, private router: Router, private themeService: ThemeService) {
+  constructor( private loginService: LoginService,
+    private router: Router,
+    private themeService: ThemeService) {
     this.themeService.isDark.subscribe((value: boolean) => {
       this.btnStylingMode = value ? 'outlined' : 'contained';
     });
   }
 
   changePasswordMode() {
-    debugger;
     this.passwordMode = this.passwordMode === 'text' ? 'password' : 'text';
   };
 
   async onSubmit(e: Event) {
     e.preventDefault();
-    const { email, password } = this.formData;
+    const { userName, password } = this.formData;
     this.loading = true;
 
-    this.authService.logIn(email, password).subscribe({
-      next: res=> {
-    this.loading = false;
-        console.log(res);
-
-        this.router.navigate([this.authService.lastAuthenticatedPath]);
-    },
-    error: (err) => {
-      this.loading = false;
-      console.error(err.error);
-      // Aquí puedes manejar el error de la forma que desees
-      notify('Ocurrió un error en la autenticación', 'error', 4000);
-    }});
+    this.loginService.logIn(userName, password)
+      .then(()=> {
+        // Si el login es exitoso, obtenemos los datos del usuario
+        this.loginService.getPerfil().subscribe({
+          next: (userData) => {
+            console.log('Datos del usuario:', userData);
+            // Aquí puedes manejar los datos del usuario
+            this.loading = false;
+            // Redirigir al dashboard u otra página
+            this.router.navigate(['/']);
+          },
+          error: (err) => {
+            console.error('Error al obtener los datos del usuario:', err);
+            this.loading = false;
+            notify('Error al obtener los datos del usuario', 'error', 4500);
+          }
+        });
+      })
+      .catch(responseError => {
+        this.loading = false;
+        notify('Error en credenciales', 'error', 4500)
+      });
 
   }
 
@@ -82,7 +93,8 @@ export class LoginFormComponent implements OnInit {
   };
 
   async ngOnInit(): Promise<void> {
-    this.defaultAuthData = await this.authService.getUser();
+    // this.defaultAuthData = await this.authService.getUser();
+    this.defaultAuthData = null;
   }
 }
 @NgModule({

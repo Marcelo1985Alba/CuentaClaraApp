@@ -42,9 +42,14 @@ export class ResetPasswordFormComponent implements OnInit {
     }
   }
 
+  // async ngOnInit(): Promise<void> {
+  //   this.defaultAuthData = await this.authService.getUser();
+  // }
+
   async ngOnInit(): Promise<void> {
-    this.defaultAuthData = await this.authService.getUser();
+    await this.authService.getUser();
   }
+
 }
 @NgModule({
   imports: [

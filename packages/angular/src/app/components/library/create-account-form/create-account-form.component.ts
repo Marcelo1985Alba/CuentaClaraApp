@@ -42,8 +42,12 @@ export class CreateAccountFormComponent implements OnInit {
 
   confirmPassword = (e: ValidationCallbackData) => e.value === this.formData.password;
 
+  // async ngOnInit(): Promise<void> {
+  //   this.defaultAuthData = await this.authService.getUser();
+  // }
+
   async ngOnInit(): Promise<void> {
-    this.defaultAuthData = await this.authService.getUser();
+    this.authService.getUser();
   }
 }
 @NgModule({

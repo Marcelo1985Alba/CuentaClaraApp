@@ -24,6 +24,8 @@ import { AnalyticsDashboardModule } from './pages/analytics-dashboard/analytics-
 import { AnalyticsSalesReportModule } from './pages/analytics-sales-report/analytics-sales-report.component';
 import { AnalyticsGeographyModule } from './pages/analytics-geography/analytics-geography.component';
 import { ThemeService } from './services';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,11 @@ import { ThemeService } from './services';
 
     AppRoutingModule,
   ],
-  providers: [AuthService, ScreenService, AppInfoService, ThemeService],
+  providers: [AuthService, ScreenService, AppInfoService, ThemeService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

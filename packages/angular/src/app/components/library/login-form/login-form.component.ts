@@ -10,6 +10,8 @@ import notify from 'devextreme/ui/notify';
 import { IResponse, ThemeService } from 'src/app/services';
 import { error } from 'console';
 import { LoginService } from 'src/app/shared/services/login.service';
+import { IApiResponseData } from 'src/app/core/models/response/response';
+import { IUserDto } from 'src/app/core/models/user/user-dto';
 
 @Component({
   selector: 'app-login-form',
@@ -20,7 +22,7 @@ export class LoginFormComponent implements OnInit {
   @Input() resetLink = '/auth/reset-password';
   @Input() createAccountLink = '/auth/create-account';
 
-  defaultAuthData: IResponse;
+  defaultAuthData: IApiResponseData<IUserDto>;
 
   btnStylingMode: DxButtonTypes.ButtonStyle;
 
@@ -64,22 +66,25 @@ export class LoginFormComponent implements OnInit {
     this.loading = true;
 
     this.loginService.logIn(userName, password)
-      .then(()=> {
+      .then((userLogin)=> {
         // Si el login es exitoso, obtenemos los datos del usuario
-        this.loginService.getPerfil().subscribe({
-          next: (userData) => {
-            console.log('Datos del usuario:', userData);
-            // Aquí puedes manejar los datos del usuario
-            this.loading = false;
-            // Redirigir al dashboard u otra página
-            this.router.navigate(['/']);
-          },
-          error: (err) => {
-            console.error('Error al obtener los datos del usuario:', err);
-            this.loading = false;
-            notify('Error al obtener los datos del usuario', 'error', 4500);
-          }
-        });
+        if(userLogin.success){
+          this.loginService.getPerfil().subscribe({
+            next: (userData) => {
+              console.log(userData);
+              // Aquí puedes manejar los datos del usuario
+              this.loading = false;
+              // Redirigir al dashboard u otra página
+              this.router.navigate(['/']);
+            },
+            error: (err) => {
+              console.error('Error al obtener los datos del usuario:', err);
+              this.loading = false;
+              notify('Error al obtener los datos del usuario', 'error', 4500);
+            }
+          });
+        }
+
       })
       .catch(responseError => {
         this.loading = false;

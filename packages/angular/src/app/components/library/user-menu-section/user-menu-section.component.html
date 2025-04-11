@@ -2,11 +2,12 @@
   <div class="user-info">
     <div class="image-container" *ngIf="showAvatar">
       <div
-        [style.backgroundImage]="'url(' + user?.avatarUrl + ')'"
+        [style.backgroundImage]="'url(' + user?.imageUrl + ')'"
         class="user-image"
       ></div>
     </div>
-    <div class="user-name">{{ user?.name }}</div>
+    <!-- <div class="user-name">{{ user?.userName }}</div> -->
+    <div class="user-name">{{ user?.firstName }} {{user?.lastName}}</div>
   </div>
   <dx-list
     #userInfoList

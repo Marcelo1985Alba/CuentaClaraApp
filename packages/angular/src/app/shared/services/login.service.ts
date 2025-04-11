@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { resolve } from 'path';
+import { IApiResponseData } from 'src/app/core/models/response/response';
+import { IUserDto } from 'src/app/core/models/user/user-dto';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Injectable({
@@ -11,13 +13,13 @@ export class LoginService {
 
 
 
-  logIn(userName: string, password: string, callback?:any) : Promise<any>{
+  logIn(userName: string, password: string, callback?:any) : Promise<IApiResponseData<IUserDto>>{
 
     const cb = callback || function(){};
     return new Promise((resolve, reject) =>{
       this.authService.logIn(userName, password).subscribe({
         next: res=> {
-          console.log(res);
+
           resolve(res);
 
           return cb();

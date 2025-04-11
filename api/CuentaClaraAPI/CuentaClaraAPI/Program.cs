@@ -115,7 +115,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")  // Dirección de tu aplicación Angular
+        policy.WithOrigins("http://localhost:4200", "https://localhost:4200")  // Dirección de tu aplicación Angular
               .AllowCredentials() // Permitir el uso de credenciales (cookies)
               .AllowAnyHeader()  // Permite cualquier encabezado
               .AllowAnyMethod(); // Permite cualquier método HTTP (GET, POST, PUT, DELETE, etc.)

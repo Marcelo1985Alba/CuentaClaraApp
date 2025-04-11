@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DxListModule, DxListTypes } from 'devextreme-angular/ui/list';
 import { IUser } from '../../../services/auth.service';
+import { IUserDto } from 'src/app/core/models/user/user-dto';
 
 @Component({
   selector: 'user-menu-section',
@@ -18,7 +19,7 @@ export class UserMenuSectionComponent {
   showAvatar!: boolean;
 
   @Input()
-  user!: IUser | null;
+  user!: IUserDto | null;
 
   @ViewChild('userInfoList', { read: ElementRef }) userInfoList: ElementRef<HTMLElement>;
 

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DxDropDownButtonModule } from 'devextreme-angular/ui/drop-down-button';
 import { UserMenuSectionModule, UserMenuSectionComponent } from '../user-menu-section/user-menu-section.component';
 import { IUser } from '../../../services/auth.service';
+import { IUserDto } from 'src/app/core/models/user/user-dto';
 @Component({
   selector: 'user-panel',
   templateUrl: 'user-panel.component.html',
@@ -18,7 +19,7 @@ export class UserPanelComponent {
   menuMode!: string;
 
   @Input()
-  user!: IUser | null;
+  user!: IUserDto | null;
 
   @ViewChild(UserMenuSectionComponent) userMenuSection: UserMenuSectionComponent;
 

@@ -1,3 +1,4 @@
+import { IUserDto } from './../../../core/models/user/user-dto';
 import {
   Component, NgModule, Input, Output, EventEmitter, OnInit,
 } from '@angular/core';
@@ -26,7 +27,7 @@ export class AppHeaderComponent implements OnInit {
   @Input()
   title!: string;
 
-  user: IUser | null = { email: '' };
+  user: IUserDto | null = {id: '', userName: '', email: '', firstName:'', lastName:'', imageUrl: '', phoneNumber:'' };
 
   userMenuItems = [
   {
@@ -40,7 +41,10 @@ export class AppHeaderComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   ngOnInit() {
-    this.authService.getUser().subscribe((e) => this.user = e.data);
+    // this.authService.getUser().subscribe((e) => this.user = e.data);
+    const userJson = localStorage.getItem('currentUser');
+    this.user = JSON.parse(userJson) as IUserDto;
+    this.user.imageUrl = 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/01.png'
   }
 
   toggleMenu = () => {

@@ -58,14 +58,15 @@ namespace CuentaClara.API.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true, // La cookie no será accesible desde JavaScript
-                Secure = true,   // Solo se enviará en conexiones HTTPS
-                SameSite = SameSiteMode.None, // Permite enviar cookies entre dominios distintos (CORS)
+                Secure = false,   // Solo se enviará en conexiones HTTPS
+                SameSite = SameSiteMode.Lax, // Permite enviar cookies entre dominios distintos (CORS)
                 Expires = DateTime.UtcNow.AddHours(1) // Expira en 1 hora
+                //Domain = "localhost"  // Agrega esta línea
             };
 
             Response.Cookies.Append("AuthToken", result.Token, cookieOptions);
 
-            //return Ok(new { Token = result.Token });
+            //result.result.User.Token = result.Token;
             return this.OkResult(result.result.User, "Inicio de sesión exitoso");
         }
 
@@ -79,7 +80,7 @@ namespace CuentaClara.API.Controllers
                 return this.UnauthorizedResult("Credenciales inválidas");
 
 
-            return this.OkResult(new { Message = "Bienvenido!", Token = token });
+            return this.OkResult(new UserDto());
 
             //return Ok(new { Message = "Bienvenido!", Token = token });
         }

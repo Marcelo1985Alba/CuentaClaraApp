@@ -43,7 +43,7 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private http: HttpClient,private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   // async logIn(username: string, password: string) {
   //   try {
@@ -73,7 +73,7 @@ export class AuthService {
               this._user.imageUrl = 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/01.png'
             }
             // También puedes almacenar en localStorage si necesitas persistencia
-            // localStorage.setItem('currentUser', JSON.stringify(response.data));
+            localStorage.setItem('currentUser', JSON.stringify(response.data));
           }
         })
       );
@@ -81,10 +81,10 @@ export class AuthService {
   }
 
 
-  getUser() : Observable<IApiResponseData<IUserDto>> {
+  getUser() : Observable<any> {
     // Send request
     return this.http.get<any>('https://localhost:7062/api/Users/UserLoggedIn');
-    //return this.http.get<any>('https://localhost:7062/api/Users/UserLoggedIn');
+    // return this.http.get<any>('https://localhost:7062/api/Users/debug-auth');
   }
 
   async createAccount(email: string, password: string) {

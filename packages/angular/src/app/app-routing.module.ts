@@ -23,6 +23,7 @@ import { AppSignInComponent } from './pages/sign-in-form/sign-in-form.component'
 import { AppSignUpComponent } from './pages/sign-up-form/sign-up-form.component';
 import { AppResetPasswordComponent } from './pages/reset-password-form/reset-password-form.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { AdminUsersListComponent } from './pages/admin-users-list/admin-users-list.component';
 
 const routes: Routes = [
   {
@@ -60,6 +61,11 @@ const routes: Routes = [
     path: '',
     component: SideNavOuterToolbarComponent,
     children: [
+      {
+        path: 'admin-users-list',
+        component: AdminUsersListComponent,
+        canActivate: [AuthGuardService],
+      },
       {
         path: 'crm-contact-list',
         component: CrmContactListComponent,

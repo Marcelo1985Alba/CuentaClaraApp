@@ -1,5 +1,20 @@
 export const navigation = [
   {
+    text: 'ADMIN',
+    icon: 'group',
+    path: '',
+    items: [
+      {
+        text: 'Lista de Usuarios',
+        path: '/admin-users-list',
+      },
+      {
+        text: 'Contact Details',
+        path: '/admin-user-details',
+      },
+    ],
+  },
+  {
     text: 'CRM',
     icon: 'user',
     path: '',

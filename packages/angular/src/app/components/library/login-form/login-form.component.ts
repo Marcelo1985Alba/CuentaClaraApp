@@ -69,20 +69,22 @@ export class LoginFormComponent implements OnInit {
       .then((userLogin)=> {
         // Si el login es exitoso, obtenemos los datos del usuario
         if(userLogin.success){
-          this.loginService.getPerfil().subscribe({
-            next: (userData) => {
-              console.log(userData);
-              // Aquí puedes manejar los datos del usuario
-              this.loading = false;
-              // Redirigir al dashboard u otra página
-              this.router.navigate(['/']);
-            },
-            error: (err) => {
-              console.error('Error al obtener los datos del usuario:', err);
-              this.loading = false;
-              notify('Error al obtener los datos del usuario', 'error', 4500);
-            }
-          });
+          this.loading = false;
+          this.router.navigate(['/']);
+          // this.loginService.getPerfil().subscribe({
+          //   next: (userData) => {
+          //     console.log(userData);
+          //     // Aquí puedes manejar los datos del usuario
+
+          //     // Redirigir al dashboard u otra página
+          //     this.router.navigate(['/']);
+          //   },
+          //   error: (err) => {
+          //     console.error('Error al obtener los datos del usuario:', err);
+          //     this.loading = false;
+          //     notify('Error al obtener los datos del usuario', 'error', 4500);
+          //   }
+          // });
         }
 
       })

@@ -42,7 +42,7 @@ namespace CuentaClara.Application.Services
             return (true, MapToDto(user), null);
         }
 
-        public async Task<(bool Success, IEnumerable<UserDto>, string? ErrorMessage)> GetAllAsync()
+        public async Task<(bool Success, IEnumerable<UserDto> Users, string? ErrorMessage)> GetAllAsync()
         {
             var users = await _userRepository.GetAllAsync();
             if (users == null || !users.Any())

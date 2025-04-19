@@ -3,6 +3,7 @@ using CuentaClara.Application.DTOs;
 using CuentaClara.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CuentaClara.API.Controllers
 {
@@ -18,11 +19,11 @@ namespace CuentaClara.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize] //(Roles = "Admin")
         public async Task<IActionResult> GetAll()
         {
             var result = await _userService.GetAllAsync();
-            return this.OkResult(result, "Usuarios obtenidos correctamente");
+            return this.OkResult(result.Users, "Usuarios obtenidos correctamente");
         }
 
         [HttpGet("{id}")]
@@ -43,7 +44,7 @@ namespace CuentaClara.API.Controllers
 
             if (!result.Success) return this.BadRequestResult("Error al registrar el usuario");
 
-            return this.CreatedResult("Usuario registrado exitosamente", result.UserId, createUserDto);
+            return this.CreatedResult("GetById", result.UserId, createUserDto);
             //return CreatedAtAction(nameof(GetById), new { id = result.UserId }, null);
         }
 
@@ -58,9 +59,9 @@ namespace CuentaClara.API.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true, // La cookie no será accesible desde JavaScript
-                Secure = false,   // Solo se enviará en conexiones HTTPS
-                SameSite = SameSiteMode.Lax, // Permite enviar cookies entre dominios distintos (CORS)
-                Expires = DateTime.UtcNow.AddHours(1) // Expira en 1 hora
+                Secure = true,   // Solo se enviará en conexiones HTTPS
+                SameSite = SameSiteMode.None, // Permite enviar cookies entre dominios distintos (CORS)
+                Expires = DateTime.UtcNow.AddHours(1),  // Expira en 1 hora
                 //Domain = "localhost"  // Agrega esta línea
             };
 
@@ -85,6 +86,45 @@ namespace CuentaClara.API.Controllers
             //return Ok(new { Message = "Bienvenido!", Token = token });
         }
 
+        [HttpGet("debug-auth")]
+        public IActionResult DebugAuth()
+        {
+            var token = Request.Cookies["AuthToken"];
+            var cookieExists = !string.IsNullOrEmpty(token);
+            var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+            var username = User.Identity?.Name;
+
+            // Intentar decodificar el token manualmente
+            object tokenDetails = "No se pudo decodificar";
+            if (cookieExists)
+            {
+                try
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(token);
+                    tokenDetails = new
+                    {
+                        jwtToken.ValidFrom,
+                        jwtToken.ValidTo,
+                        jwtToken.Issuer,
+                        Audience = jwtToken.Audiences.FirstOrDefault()
+                    };
+                }
+                catch (Exception ex)
+                {
+                    tokenDetails = $"Error: {ex.Message}";
+                }
+            }
+
+            return Ok(new
+            {
+                CookieExists = cookieExists,
+                IsAuthenticated = isAuthenticated,
+                Username = username,
+                TokenDetails = tokenDetails,
+                CurrentTime = DateTime.UtcNow // Para comparar con las fechas del token
+            });
+        }
 
         [HttpPut("{id}")]
         [Authorize]

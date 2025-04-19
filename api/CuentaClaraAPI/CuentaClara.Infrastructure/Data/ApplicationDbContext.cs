@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CuentaClara.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<AppUser>
+    public class ApplicationDbContext : IdentityDbContext<AppUser, AppUserRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

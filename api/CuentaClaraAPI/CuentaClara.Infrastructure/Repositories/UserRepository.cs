@@ -3,11 +3,6 @@ using CuentaClara.Domain.Interfaces;
 using CuentaClara.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CuentaClara.Infrastructure.Repositories
 {
@@ -23,25 +18,29 @@ namespace CuentaClara.Infrastructure.Repositories
         public async Task<ApplicationUser?> GetByIdAsync(string id)
         {
             var appUser = await _userManager.FindByIdAsync(id);
-            return appUser != null ? MapToDomainModel(appUser) : null;
+            return appUser != null ? await MapToDomainModel(appUser) : null;
         }
 
         public async Task<ApplicationUser?> GetByEmailAsync(string email)
         {
             var appUser = await _userManager.FindByEmailAsync(email);
-            return appUser != null ? MapToDomainModel(appUser) : null;
+            return appUser != null ? await MapToDomainModel(appUser) : null;
         }
 
         public async Task<ApplicationUser?> GetByUsernameAsync(string username)
         {
             var appUser = await _userManager.FindByNameAsync(username);
-            return appUser != null ? MapToDomainModel(appUser) : null;
+
+            return appUser != null ? await MapToDomainModel(appUser) : null;
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
         {
             var appUsers = await _userManager.Users.ToListAsync();
-            return appUsers.Select(MapToDomainModel).ToList();
+            // Con Task.WhenAll para procesar en paralelo:
+            var tasks = appUsers.Select(user => MapToDomainModel(user));
+            var results = await Task.WhenAll(tasks);
+            return results;
         }
 
         public async Task<bool> CreateAsync(ApplicationUser user, string password)
@@ -96,8 +95,9 @@ namespace CuentaClara.Infrastructure.Repositories
             return await _userManager.CheckPasswordAsync(appUser, password);
         }
 
-        private ApplicationUser MapToDomainModel(AppUser appUser)
+        private async Task<ApplicationUser> MapToDomainModel(AppUser appUser)
         {
+            var roles = await _userManager.GetRolesAsync(appUser);
             return new ApplicationUser
             {
                 Id = appUser.Id,
@@ -110,7 +110,8 @@ namespace CuentaClara.Infrastructure.Repositories
                 LockoutEnabled = appUser.LockoutEnabled,
                 AccessFailedCount = appUser.AccessFailedCount,
                 FirstName = appUser.FirstName,
-                LastName = appUser.LastName
+                LastName = appUser.LastName,
+                Roles = roles
             };
         }
     }

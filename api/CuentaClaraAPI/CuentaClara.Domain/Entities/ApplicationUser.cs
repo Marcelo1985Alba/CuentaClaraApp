@@ -1,4 +1,5 @@
-﻿namespace CuentaClara.Domain.Entities
+﻿
+namespace CuentaClara.Domain.Entities
 {
     public class ApplicationUser
     {
@@ -18,6 +19,6 @@
         public string ImageUrl { get; set; } = null!;
 
         // Relación con roles
-        //public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new HashSet<ApplicationUserRole>();
+        public virtual ICollection<string> Roles { get; set; } = new HashSet<string>();
     }
 }

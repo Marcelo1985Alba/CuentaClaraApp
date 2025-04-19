@@ -17,5 +17,6 @@ namespace CuentaClara.Application.DTOs
         public string ImageUrl { get; set; } = null!;
 
         //public string? Token { get; set; }
+        public ICollection<string> Roles { get; set; } = null!;
     }
 }

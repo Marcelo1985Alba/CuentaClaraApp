@@ -6,9 +6,11 @@ using CuentaClara.Infrastructure.Data;
 using CuentaClara.Infrastructure.Models;
 using CuentaClara.Infrastructure.Repositories;
 using CuentaClara.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -19,58 +21,145 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Agregar HttpContextAccessor para acceder al contexto desde servicios
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+
 // Configurar Identity
-builder.Services.AddIdentityCore<AppUser>(options =>
+builder.Services.AddIdentity<AppUser, AppUserRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
+
+    // Configurar la política de bloqueo de cuentas
+    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    //options.Lockout.MaxFailedAccessAttempts = 5;
+    //options.Lockout.AllowedForNewUsers = true;
+
+    //options.SignIn.RequireConfirmedAccount = false;
+    //options.SignIn.RequireConfirmedEmail = false;
+    //options.SignIn.RequireConfirmedPhoneNumber = false;
+    //options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    
+
     options.User.RequireUniqueEmail = true;
+
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
 // Configurar JWT
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]));
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.Events = new JwtBearerEvents
     {
-        options.Events = new JwtBearerEvents
+        OnChallenge = context =>
         {
-            OnMessageReceived = context =>
+            context.HandleResponse();
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.WriteAsync("Unauthorized");
+            return Task.CompletedTask;
+        },
+
+        OnMessageReceived = context =>
+        {
+            // Buscar el token en las cookies en lugar de los headers
+            var token = context.Request.Cookies["AuthToken"];
+
+            if (!string.IsNullOrEmpty(token))
             {
-                // Buscar el token en las cookies en lugar de los headers
-                var token = context.Request.Cookies["AuthToken"];
-
-                if (!string.IsNullOrEmpty(token))
-                {
-                    context.Token = token;
-                }
-
-                return Task.CompletedTask;
+                Console.WriteLine($"Cookie encontrada: {!string.IsNullOrEmpty(token)}");
+                context.Token = token;
             }
-        };
+            else
+            {
+                Console.WriteLine("No se encontró la cookie AuthToken");
+            }
 
+            return Task.CompletedTask;
+        }
+    };
 
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = key,
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = key,
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+//.AddCookie(options => {
+//    options.Cookie.Name = "AuthToken";
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.SameSite = SameSiteMode.None;
+//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Cámbialo a Always si usas HTTPS
+//    options.ExpireTimeSpan = TimeSpan.FromHours(4);
+//    options.SlidingExpiration = true;
+//    options.LoginPath = "/api/users/login";
+//    options.LogoutPath = "/api/users/logout";
+//    options.AccessDeniedPath = "/api/users/access-denied";
+
+//    options.Events = new CookieAuthenticationEvents
+//    {
+//        // Este evento se dispara cuando se valida la cookie
+//        OnValidatePrincipal = async context =>
+//        {
+//            // Este evento se dispara cuando se valida la cookie
+//            var jwtService = context.HttpContext.RequestServices.GetRequiredService<IJwtGenerator>();
+//            try
+//            {
+//                // Extraer el token JWT del valor de la cookie
+//                var cookieValue = context.Request.Cookies["Auth.Token"];
+//                if (string.IsNullOrEmpty(cookieValue))
+//                {
+//                    context.RejectPrincipal();
+//                    return;
+//                }
+
+//                // Validar el token y obtener los claims
+//                var principal = jwtService.ValidateToken(cookieValue);
+
+//                if (principal == null)
+//                {
+//                    context.RejectPrincipal();
+//                    return;
+//                }
+
+//                // Reemplazar el principal de la cookie con el principal del JWT
+//                context.Principal = principal;
+//            }
+//            catch
+//            {
+//                // En caso de error, rechazar la autenticación
+//                context.RejectPrincipal();
+//            }
+//        }
+//    };
+//});
+
 
 // Inyección de dependencias
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -91,7 +180,8 @@ builder.Services.AddSwaggerGen(c =>
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
         In = Microsoft.OpenApi.Models.ParameterLocation.Cookie,
         Name = "AuthToken",
-        Description = "Cookie de autenticación",
+        Description = "Cookie de autenticación via api/Users/Login",
+        Scheme = "Cookie"
     });
 
     c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
@@ -105,7 +195,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "CookieAuth"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
@@ -122,13 +212,26 @@ builder.Services.AddCors(options =>
     });
 });
 
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.Cookie.Name = "AuthToken";
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.SameSite = SameSiteMode.None;
+//    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Cámbialo a Always si usas HTTPS
+//});
+
+
 var app = builder.Build();
 
 app.UseErrorHandler();
 
 // Habilitar CORS para la API
 app.UseCors("AllowAngularApp");  // Usa la política definida previamente
+app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -137,14 +240,30 @@ if (app.Environment.IsDevelopment())
     {
         // Configura la interfaz de usuario de Swagger
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cuenta Clara API V1");
+        c.EnableDeepLinking();
+        c.DisplayRequestDuration();
         c.RoutePrefix = "swagger";
+        c.ConfigObject.AdditionalItems.Add("withCredentials", true);
+        // Agregar script personalizado para incluir cookies en las peticiones
+        c.HeadContent = @"
+    <script>
+      window.onload = function() {
+        if (!window.SwaggerUIStandalonePreset) {
+          setTimeout(() => window.onload(), 100);
+          return;
+        }
+        
+        const oldFetch = window.fetch;
+        window.fetch = function(url, options) {
+          options = options || {};
+          options.credentials = 'include';
+          return oldFetch(url, options);
+        };
+      }
+    </script>";
     });
 }
 
-app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
 
 app.Run();

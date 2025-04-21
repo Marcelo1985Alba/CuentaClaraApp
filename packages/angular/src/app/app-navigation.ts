@@ -5,6 +5,10 @@ export const navigation = [
     path: '',
     items: [
       {
+        text: 'Lista de Roles',
+        path: '/admin-role-list',
+      },
+      {
         text: 'Lista de Usuarios',
         path: '/admin-users-list',
       },

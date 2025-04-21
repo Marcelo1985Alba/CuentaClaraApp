@@ -1,0 +1,40 @@
+<dx-form class="plain-styled-form" [screenByWidth]="getSizeQualifier">
+  <dxi-item itemType="group">
+    <dxo-col-count-by-screen
+      [xs]="1"
+      [sm]="1"
+      [md]="1"
+      [lg]="1"
+    ></dxo-col-count-by-screen>
+  </dxi-item>
+
+  <dxi-item itemType="group">
+    <dxo-col-count-by-screen
+      [xs]="1"
+      [sm]="2"
+      [md]="2"
+      [lg]="2"
+    ></dxo-col-count-by-screen>
+    <dxi-item>
+      <div *dxTemplate>
+        <form-textbox
+          label="Name"
+          [(value)]="newRole.name"
+          [isEditing]="true"
+        >
+        </form-textbox>
+      </div>
+    </dxi-item>
+    <dxi-item>
+      <div *dxTemplate>
+        <form-textbox
+          label="Description"
+          [(value)]="newRole.description"
+          [isEditing]="true"
+        >
+        </form-textbox>
+      </div>
+    </dxi-item>
+  </dxi-item>
+</dx-form>
+

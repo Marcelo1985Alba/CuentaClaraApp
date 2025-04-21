@@ -1,0 +1,107 @@
+<div class="view-wrapper list-page">
+  <dx-data-grid class="grid theme-dependent" noDataText="No data" height="100%" [dataSource]="roles"
+    [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [focusedRowEnabled]="true"
+    [showBorders]="true"
+    [(focusedRowKey)]="userId"
+    (onRowClick)="rowClick($event)"
+    (onExporting)="onExporting($event)"
+    [stateStoring]="{ enabled: true, type: 'localStorage', storageKey: 'rolesList' }">
+    <dxo-load-panel [showPane]="false"></dxo-load-panel>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-selection
+      selectAllMode="allPages"
+      showCheckBoxesMode="always"
+      mode="multiple"
+    ></dxo-selection>
+    <dxo-sorting mode="multiple"></dxo-sorting>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+
+    <dxo-search-panel
+      [visible]="true"
+      placeholder="User Search"
+    ></dxo-search-panel>
+    <dxo-export
+      [enabled]="true"
+      [allowExportSelectedData]="true"
+      [formats]="['xlsx', 'pdf']"
+    >
+    </dxo-export>
+
+    <dxo-toolbar>
+      <dxi-item location="before">
+        <div class="grid-header">Roles</div>
+      </dxi-item>
+      <dxi-item location="before" locateInMenu="auto">
+        <!-- <dx-drop-down-button
+          stylingMode="text"
+          [useSelectMode]="true"
+          [items]="filterStatusList"
+          [dropDownOptions]="{ width: 'auto' }"
+          [selectedItemKey]="filterStatusList[0]"
+          (onSelectionChanged)="filterByStatus($event)"
+        ></dx-drop-down-button> -->
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          text="Add Role"
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="addRole()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item
+        location="after"
+        locateInMenu="auto"
+        showText="inMenu"
+        widget="dxButton"
+        [options]="{
+          text: 'Refresh',
+          icon: 'refresh',
+          onClick: refreshData,
+          stylingMode: 'text'
+        }"
+      ></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="exportButton"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="columnChooserButton" locateInMenu="auto"></dxi-item>
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+    </dxo-toolbar>
+
+    <dxi-column
+      dataField="id"
+      caption="Id"
+      [allowEditing]="false"
+      [visible]="false"
+      [hidingPriority]="5"
+      [minWidth]="150"
+    ></dxi-column>
+    <dxi-column
+      dataField="name"
+      caption="Name"
+      [allowEditing]="false"
+      [hidingPriority]="5"
+      [minWidth]="150"
+    ></dxi-column>
+    <dxi-column
+      dataField="description"
+      caption="Description"
+      [allowEditing]="false"
+      [hidingPriority]="5"
+      [minWidth]="150"
+    ></dxi-column>
+  </dx-data-grid>
+
+  <form-popup [(visible)]="isAddRolePopupOpened" (save)= "onClickSaveNewRole()" titleText="New role">
+    <role-new-form></role-new-form>
+  </form-popup>
+</div>
+

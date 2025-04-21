@@ -1,3 +1,4 @@
+import { AdminRolesListComponent } from './pages/admin-roles-list/admin-roles-list.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
@@ -61,6 +62,11 @@ const routes: Routes = [
     path: '',
     component: SideNavOuterToolbarComponent,
     children: [
+      {
+        path: 'admin-role-list',
+        component: AdminRolesListComponent,
+        canActivate: [AuthGuardService],
+      },
       {
         path: 'admin-users-list',
         component: AdminUsersListComponent,

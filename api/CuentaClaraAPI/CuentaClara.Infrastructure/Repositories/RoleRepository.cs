@@ -14,16 +14,22 @@ namespace CuentaClara.Infrastructure.Repositories
         {
             _roleManager = roleManager;
         }
-        public async Task<bool> CreateAsync(ApplicationRole role)
+        public async Task<(bool Succeeded, ApplicationRole? applicationRole)> CreateAsync(ApplicationRole role)
         {
             var appRole = await _roleManager.FindByIdAsync(role.Id);
-            if (appRole == null) return false;
+            if (appRole != null)
+            {
+                return (false, null);
+            }
 
-            appRole.Name = role.Name;
-            appRole.Description = role.Description;
+            appRole = new AppUserRole
+            {
+                Name = role.Name,
+                Description = role.Description,
+            };
 
             var result = await _roleManager.CreateAsync(appRole);
-            return result.Succeeded;
+            return (result.Succeeded, MapToDomainModel(appRole));
         }
 
         public async Task<bool> DeleteAsync(string id)

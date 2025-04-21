@@ -21,11 +21,11 @@ namespace CuentaClara.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _rolService.GetAllAsync();
-            return this.OkResult(result, "Roles obtenidos correctamente");
+            return this.OkResult(result.Roles, "Roles obtenidos correctamente");
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetById(string id)
         {
             var result = await _rolService.GetByIdAsync(id);
@@ -34,12 +34,13 @@ namespace CuentaClara.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> Create(RoleDto role)
         {
             var result = await _rolService.CreateAsync(role);
             if (!result.Success) return this.NotFoundResult(result.ErrorMessage);
-            return this.CreatedResult<string>("GetById", result.RoleId, result.RoleId);
+            role.Id = result.RoleId;
+            return this.CreatedResult("GetById", result.RoleId, role);
         }
 
         [HttpPut("{id}")]

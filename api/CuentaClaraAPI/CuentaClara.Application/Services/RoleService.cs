@@ -23,12 +23,12 @@ namespace CuentaClara.Application.Services
             };
 
             var result = await _roleRepository.CreateAsync(role);
-            if (!result)
+            if (!result.Succeeded)
             {
                 var errorMessage = string.Join(", ", "Error al crear rol");
                 return (false, null, errorMessage);
             }
-            return (result, role.Id, null);
+            return (result.Succeeded, result.applicationRole?.Id, null);
         }
 
         public async Task<(bool Success, string? ErrorMessage)> DeleteAsync(string id)

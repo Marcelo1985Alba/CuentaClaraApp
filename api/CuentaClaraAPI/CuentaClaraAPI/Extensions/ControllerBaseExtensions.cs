@@ -71,7 +71,7 @@ namespace CuentaClara.API.Extensions
         public static ActionResult CreatedResult<T>(this ControllerBase controller, string actionName, object routeValues, T data)
         {
             var result = ApiResult<T>.Ok(data, "Recurso creado exitosamente");
-            return controller.CreatedAtAction(actionName, routeValues, result);
+            return controller.CreatedAtAction(actionName, new { id = routeValues }, result.Data);
         }
 
         public static ActionResult BadRequestResult(this ControllerBase controller, string error)

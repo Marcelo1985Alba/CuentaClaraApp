@@ -25,4 +25,8 @@
     <ProjectReference Include="..\CuentaClara.Infrastructure\CuentaClara.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

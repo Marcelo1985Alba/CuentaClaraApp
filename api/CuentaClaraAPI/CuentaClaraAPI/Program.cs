@@ -222,7 +222,7 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-
+app.UseStaticFiles(); // Esto permite servir imágenes desde wwwroot
 app.UseErrorHandler();
 
 // Habilitar CORS para la API

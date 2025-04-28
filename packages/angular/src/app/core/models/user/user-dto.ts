@@ -1,3 +1,4 @@
+
 export interface IUserDto {
   id: string;
   userName: string;
@@ -7,6 +8,10 @@ export interface IUserDto {
   phoneNumber: string;
   imageUrl: string;
   // token: string;
+}
+
+export interface IUserDtoDetails extends IUserDto {
+  roles: string[];
 }
 
 export interface ICreateUserDto {
@@ -19,9 +24,12 @@ export interface ICreateUserDto {
 }
 
 export interface IUpdateUserDto {
+  email: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  roles: string[];
+  imageUrl: string;
 }
 
 export interface ILoginDto {

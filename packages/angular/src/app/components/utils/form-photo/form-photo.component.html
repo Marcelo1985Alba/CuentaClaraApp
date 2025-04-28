@@ -1,4 +1,4 @@
-<div
+<!-- <div
   [ngStyle]="{
     'width.px': size,
     'height.px': size,
@@ -9,10 +9,25 @@
   [class.editable]="editable"
 >
   <i *ngIf="editable" class="edit-icon dx-icon-photooutline"></i>
+</div> -->
+
+<div [style.background-image]="imageUrl"
+[style.width.px]="size"
+[style.height.px]="size"
+[style.max-height.px]="size"
+class="photo"
+[class.editable]="editable">
+<i *ngIf="editable" class="edit-icon dx-icon-photooutline"></i>
 </div>
 <dx-file-uploader
   *ngIf="editable"
   [dialogTrigger]="hostRef"
   [visible]="false"
   accept="image/*"
+  uploadMode="instantly"
+  [multiple]="false"
+  [uploadUrl]="uploadUrl"
+  [name]="'file'"
+  (onUploaded)="onUploaded($event)"
+  (onUploadStarted)="onUploadStarted($event)"
 ></dx-file-uploader>

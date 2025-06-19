@@ -48,6 +48,12 @@ namespace CuentaClara.Infrastructure.Security
             return tokenHandler.WriteToken(token);
         }
 
+        public void InvalidateToken(string token)
+        {
+            
+
+        }
+
         public ClaimsPrincipal ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -1,5 +1,5 @@
 <form class="login-form" (submit)="onSubmit($event)">
-  <dx-form
+  <dx-form #formComponent
     labelLocation="top"
     [formData]="formData"
     [disabled]="loading"
@@ -16,19 +16,20 @@
     >
       <dxi-validation-rule
         type="required"
-        message="Email is required"
+        message="User is required"
       ></dxi-validation-rule>
       <!-- <dxi-validation-rule
         type="email"
         message="Email is invalid"
       ></dxi-validation-rule> -->
-      <dxo-label text="Email"></dxo-label>
+      <dxo-label text="UserName"></dxo-label>
     </dxi-item>
 
-    <dxi-item
+    <dxi-item #passwordInput
       dataField="password"
       editorType="dxTextBox"
       [editorOptions]="passwordEditorOptions"
+
     >
       <dxi-validation-rule
         type="required"

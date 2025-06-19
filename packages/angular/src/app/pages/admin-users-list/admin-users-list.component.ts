@@ -21,6 +21,8 @@ import jsPDF from 'jspdf';
 import { Workbook } from 'exceljs';
 import { saveAs } from 'file-saver-es';
 import { Router } from '@angular/router';
+import { UserPanelModule } from 'src/app/components';
+import { UserPanelEditModule } from 'src/app/components/library/user-panel-edit/user-panel-edit.component';
 
 @Component({
   selector: 'app-admin-users',
@@ -37,6 +39,7 @@ export class AdminUsersListComponent implements OnInit {
   searchDataGrid: any;
   userId: string;
   isPanelOpened = false;
+  user: IUserDto;
   dataSource = new DataSource<IUserDto[], string>({
       key: 'id',
       load: () => new Promise((resolve, reject) => {
@@ -44,7 +47,7 @@ export class AdminUsersListComponent implements OnInit {
             next: (data: IApiResponseData<IUserDto[]>) => resolve(data),
             error: ({message}) =>{
               reject(message)
-              this.router.navigate(['/auth']);
+              this.router.navigate(['/auth/login']);
             }
           })
       }),
@@ -60,22 +63,25 @@ export class AdminUsersListComponent implements OnInit {
     }
 
     refreshData= ()=>{
-      this.usersService.getUsers().subscribe({
-        next: (response)=>{
-          this.datasource = response.data;
-          this.dataGrid.instance.refresh();
-        },
-        error:(err)=>{
-          console.error(err);
-          notify('No se pudo cargar los usarios', 'error', 3800)
-        }
+
+      this.dataSource = new DataSource<IUserDto[], string>({
+        key: 'id',
+        load: () => new Promise((resolve, reject) => {
+          this.usersService.getUsers().subscribe({
+              next: (data: IApiResponseData<IUserDto[]>) => resolve(data),
+              error: ({message}) =>{
+                reject(message)
+                this.router.navigate(['/auth/login']);
+              }
+            })
+        }),
       });
     }
 
     rowClick(e: DxDataGridTypes.RowClickEvent) {
-      const { data } = e;
+      this.user = e.data;
 
-      this.userId = data.id;
+      this.userId = this.user.id;
       this.isPanelOpened = true;
     }
 
@@ -103,11 +109,21 @@ export class AdminUsersListComponent implements OnInit {
           });
           e.cancel = true;
         }
-      }
+    }
 
   addUser() {
     throw new Error('Method not implemented.');
   }
+
+  onOpenedChange = (value: boolean) => {
+    if (!value) {
+      this.userId = null;
+    }
+  };
+
+  onPinnedChange = () => {
+    this.dataGrid.instance.updateDimensions();
+  };
 }
 
 
@@ -116,7 +132,8 @@ export class AdminUsersListComponent implements OnInit {
     DxToolbarModule,
     DxDataGridModule,
     DxTabsModule,
-    DxButtonModule
+    DxButtonModule,
+    UserPanelEditModule
 ],
   providers: [],
   exports: [],

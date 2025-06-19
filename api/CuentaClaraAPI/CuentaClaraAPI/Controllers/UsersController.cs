@@ -33,7 +33,7 @@ namespace CuentaClara.API.Controllers
             var result = await _userService.GetByIdAsync(id);
             if (!result.Success) return this.NotFoundResult(result.ErrorMessage);
 
-            return this.OkResult(result.Item2);
+            return this.OkResult(result.userDtoDetails);
         }
 
         [HttpPost("register")]
@@ -52,7 +52,7 @@ namespace CuentaClara.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            var result = await _userService.LoginAsync(loginDto);
+                var result = await _userService.LoginAsync(loginDto);
 
             if (!result.result.Success) return this.UnauthorizedResult("Credenciales inválidas");
 
@@ -70,6 +70,42 @@ namespace CuentaClara.API.Controllers
             //result.result.User.Token = result.Token;
             return this.OkResult(result.result.User, "Inicio de sesión exitoso");
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                // 1. Obtener el token de la cookie
+                var token = Request.Cookies["authToken"]; // o el nombre que uses
+
+                // 2. Invalidar el token en tu sistema (opcional pero recomendado)
+                if (!string.IsNullOrEmpty(token))
+                {
+                    // Agregar token a una lista negra o marcarlo como inválido en BD
+                    _userService.LogOutAsync(token);
+                }
+
+                // 3. Borrar la cookie del servidor
+                Response.Cookies.Delete("authToken", new CookieOptions
+                {
+                    Path = "/",
+                    Domain = "tudominio.com", // opcional
+                    Secure = true,  // si usas HTTPS
+                    SameSite = SameSiteMode.Strict
+                });
+
+                // 4. También borrar otras cookies relacionadas si las hay
+                Response.Cookies.Delete("refreshToken");
+
+                return Ok(new { success = true, message = "Logout exitoso" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = "Error en logout" });
+            }
+        }
+
 
         [HttpGet("UserLoggedIn")]
         [Authorize]
@@ -125,6 +161,8 @@ namespace CuentaClara.API.Controllers
                 CurrentTime = DateTime.UtcNow // Para comparar con las fechas del token
             });
         }
+
+
 
         [HttpPut("{id}")]
         [Authorize]

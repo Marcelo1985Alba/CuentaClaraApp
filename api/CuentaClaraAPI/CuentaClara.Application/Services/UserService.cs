@@ -16,7 +16,7 @@ namespace CuentaClara.Application.Services
             _jwtGenerator = jwtGenerator;
         }
 
-        public async Task<(bool Success, UserDto?, string? ErrorMessage)> GetByIdAsync(string id)
+        public async Task<(bool Success, UserDtoDetails? userDtoDetails, string? ErrorMessage)> GetByIdAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
                 return (false, null, "El id de usuario es requerido");
@@ -26,7 +26,7 @@ namespace CuentaClara.Application.Services
             if (user == null)
                 return (false, null, "Usuario no encontrado");
 
-            return (true, MapToDto(user), null);
+            return (true, MapToDtoDetails(user), null);
         }
 
         public async Task<(bool Success, UserDto?, string? ErrorMessage)> GetByEmailAsync(string email)
@@ -83,6 +83,7 @@ namespace CuentaClara.Application.Services
             user.LastName = userDto.LastName;
             user.PhoneNumber = userDto.PhoneNumber;
             user.ImageUrl = userDto.ImageUrl;
+            user.Roles = userDto.Roles;
 
             var result = await _userRepository.UpdateAsync(user);
             if (!result)
@@ -126,8 +127,36 @@ namespace CuentaClara.Application.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                ImageUrl = user.ImageUrl
+                //ImageUrl = user.ImageUrl
             };
+        }
+
+        private UserDtoDetails MapToDtoDetails(ApplicationUser user)
+        {
+            return new UserDtoDetails
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                ImageUrl = user.ImageUrl,
+                Roles = user.Roles,
+            };
+        }
+
+        public async Task<(bool Success, string? ErrorMessage)> LogOutAsync(string token)
+        {
+            try
+            {
+                await Task.Run(() => _jwtGenerator.InvalidateToken(token));
+                return (Success: true, ErrorMessage: null);
+            }
+            catch (Exception ex)
+            {
+                return (Success: false, ErrorMessage: ex.Message);
+            }
         }
     }
 }

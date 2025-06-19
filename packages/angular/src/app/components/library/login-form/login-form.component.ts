@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule, Input, OnInit } from '@angular/core';
+import { Component, NgModule, Input, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 import { LoginOauthModule } from 'src/app/components/library/login-oauth/login-oauth.component';
@@ -21,6 +21,8 @@ import { IUserDto } from 'src/app/core/models/user/user-dto';
 export class LoginFormComponent implements OnInit {
   @Input() resetLink = '/auth/reset-password';
   @Input() createAccountLink = '/auth/create-account';
+
+  @ViewChild('formComponent', { static: false }) formComponent: any; // Referencia al dx-form
 
   defaultAuthData: IApiResponseData<IUserDto>;
 
@@ -48,6 +50,7 @@ export class LoginFormComponent implements OnInit {
     }]
   }
 
+
   constructor( private loginService: LoginService,
     private router: Router,
     private themeService: ThemeService) {
@@ -58,6 +61,18 @@ export class LoginFormComponent implements OnInit {
 
   changePasswordMode() {
     this.passwordMode = this.passwordMode === 'text' ? 'password' : 'text';
+
+
+    if (this.formComponent && this.formComponent.instance) {
+      const passwordEditor = this.formComponent.instance.getEditor('password');
+      if (passwordEditor) {
+        passwordEditor.option('mode', this.passwordMode);
+        console.log('Password mode changed to:', this.passwordMode);
+      } else {
+        console.error('Password editor not found');
+      }
+    }
+
   };
 
   async onSubmit(e: Event) {
@@ -67,8 +82,14 @@ export class LoginFormComponent implements OnInit {
 
     this.loginService.logIn(userName, password)
       .then((userLogin)=> {
+
+        console.log('Login response:', userLogin); // LOG 1
+        console.log('userLogin.success:', userLogin.success); // LOG 2
+        console.log('Type of success:', typeof userLogin.success);
+
         // Si el login es exitoso, obtenemos los datos del usuario
         if(userLogin.success){
+          console.log('SUCCESS: Navigating to home'); // LOG 4
           this.loading = false;
           this.router.navigate(['/']);
           // this.loginService.getPerfil().subscribe({
@@ -86,7 +107,12 @@ export class LoginFormComponent implements OnInit {
           //   }
           // });
         }
-
+        else {
+          console.log('FAILED: Showing error message'); // LOG 5
+          // Manejar error de credenciales
+          const errorMessage = userLogin.message || 'Error en credenciales';
+          notify(errorMessage, 'error', 4500);
+        }
       })
       .catch(responseError => {
         this.loading = false;
@@ -101,6 +127,21 @@ export class LoginFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     // this.defaultAuthData = await this.authService.getUser();
+    this.passwordEditorOptions = {
+      placeholder: 'Password',
+      stylingMode:'filled',
+      mode: this.passwordMode,
+      value: 'password',
+      buttons: [{
+        name: 'password',
+        location: 'after',
+        options: {
+          icon: 'info',
+          stylingMode:'text',
+          onClick: () => this.changePasswordMode(),
+        }
+      }]
+    }
     this.defaultAuthData = null;
   }
 }

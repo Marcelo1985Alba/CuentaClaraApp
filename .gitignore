@@ -51,3 +51,5 @@ swa-cli.config.json
 /api/CuentaClaraAPI/CuentaClara.Infrastructure/obj/Debug/net9.0/CuentaClara.Infrastructure.sourcelink.json
 /api/CuentaClaraAPI/CuentaClara.Infrastructure/obj/Debug/net9.0/refint/CuentaClara.Infrastructure.dll
 /api/CuentaClaraAPI/.vs/CuentaClaraAPI/CopilotIndices/17.13.444.19527
+/api/CuentaClaraAPI/CuentaClara.Infrastructure/obj/project.assets.json
+/api/CuentaClaraAPI/CuentaClara.Infrastructure/obj/project.nuget.cache

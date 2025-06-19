@@ -86,5 +86,10 @@
       <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
     </dxo-toolbar>
   </dx-data-grid>
+
+  <user-panel-edit
+        [userId]="user?.id" [(isOpened)]="isPanelOpened" (isOpenedChange)="onOpenedChange($event)"
+        (pinnedChange)="onPinnedChange()"
+ ></user-panel-edit>
 </div>
 

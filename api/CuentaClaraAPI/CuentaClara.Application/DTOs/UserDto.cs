@@ -14,9 +14,15 @@ namespace CuentaClara.Application.DTOs
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
-        public string ImageUrl { get; set; } = null!;
+        //public string ImageUrl { get; set; } = null!;
 
         //public string? Token { get; set; }
+        //public ICollection<string> Roles { get; set; } = null!;
+    }
+
+    public class UserDtoDetails : UserDto
+    {
+        public string ImageUrl { get; set; } = null!;
         public ICollection<string> Roles { get; set; } = null!;
     }
 }

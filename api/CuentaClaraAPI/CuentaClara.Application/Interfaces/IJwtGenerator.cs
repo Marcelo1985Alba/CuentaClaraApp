@@ -7,5 +7,8 @@ namespace CuentaClara.Application.Interfaces
     {
         string CreateToken(ApplicationUser user);
         ClaimsPrincipal ValidateToken(string token);
+
+        void InvalidateToken(string token);
+
     }
 }

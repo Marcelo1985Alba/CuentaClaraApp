@@ -51,7 +51,8 @@ namespace CuentaClara.Infrastructure.Repositories
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                ImageUrl = user.ImageUrl
             };
 
             var result = await _userManager.CreateAsync(appUser, password);
@@ -73,8 +74,42 @@ namespace CuentaClara.Infrastructure.Repositories
             appUser.FirstName = user.FirstName;
             appUser.LastName = user.LastName;
             appUser.PhoneNumber = user.PhoneNumber;
+            appUser.ImageUrl = user.ImageUrl;
+            appUser.Email = user.Email;
 
             var result = await _userManager.UpdateAsync(appUser);
+
+            //Actualizar roles si se especificaron
+
+            if (user.Roles != null && user.Roles.Count > 0) 
+            {
+                var currentRoles = await _userManager.GetRolesAsync(appUser);
+                var rolesToAdd = user.Roles.Except(currentRoles).ToList();
+                var rolesToRemove = currentRoles.Except(user.Roles).ToList();
+                if (rolesToAdd.Count > 0)
+                {
+                    var resultAddRoles = await _userManager.AddToRolesAsync(appUser, rolesToAdd);
+                    if (!resultAddRoles.Succeeded)
+                    {
+                        var errorMessage = string.Join(", ", resultAddRoles.Errors.Select(e => e.Description));
+                        return false;
+                    }
+
+                }
+                if (rolesToRemove.Count > 0)
+                {
+                    var resultReomveRoles = await _userManager.RemoveFromRolesAsync(appUser, rolesToRemove);
+                    if (!resultReomveRoles.Succeeded)
+                    {
+                        var errorMessage = string.Join(", ", resultReomveRoles.Errors.Select(e => e.Description));
+                        return false;
+                    }
+
+                }
+            }
+
+
+
             return result.Succeeded;
         }
 
@@ -111,6 +146,7 @@ namespace CuentaClara.Infrastructure.Repositories
                 AccessFailedCount = appUser.AccessFailedCount,
                 FirstName = appUser.FirstName,
                 LastName = appUser.LastName,
+                ImageUrl = appUser.ImageUrl,
                 Roles = roles
             };
         }

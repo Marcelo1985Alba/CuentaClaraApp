@@ -135,7 +135,51 @@ export class AuthService {
 
   async logOut() {
     this.router.navigate(['/auth/login']);
+
+    try {
+    // 1. Llamar al endpoint de logout del servidor (si existe)
+      await this.http.post('https://localhost:7062/api/Users/logout', {}).toPromise();
+    } catch (error) {
+      console.log('Error en logout del servidor:', error);
+    }
+
+    this.clearAuthCookie();
+    this.clearSessionData();
   }
+
+  private clearAuthCookie() {
+  console.log('Cookies antes del logout:', document.cookie);
+
+  // Borrar AuthToken con diferentes combinaciones para asegurar que se elimine
+  document.cookie = 'AuthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie = `AuthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+  document.cookie = `AuthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`;
+
+  // Si usas HTTPS
+  document.cookie = 'AuthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure;';
+  document.cookie = `AuthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}; secure;`;
+
+  setTimeout(() => {
+    console.log('Cookies después del logout:', document.cookie);
+  }, 100);
+}
+
+private clearSessionData() {
+  // Limpiar localStorage
+  localStorage.clear();
+
+  // O limpiar keys específicas
+  // localStorage.removeItem('userProfile');
+  // localStorage.removeItem('permissions');
+
+  // Limpiar sessionStorage
+  sessionStorage.clear();
+
+  // Limpiar variables del servicio
+  // this.currentUser = null;
+  // this.isAuthenticated = false;
+  // Agrega otras variables que uses para el estado de autenticación
+}
 }
 
 @Injectable()
